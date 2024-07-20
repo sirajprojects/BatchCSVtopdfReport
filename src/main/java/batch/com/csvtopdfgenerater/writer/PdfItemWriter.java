@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemWriter;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -21,9 +22,10 @@ import batch.com.csvtopdfgenerater.entity.PatientReport;
 public class PdfItemWriter implements ItemWriter<PatientReport> {
 
     private static final String OUTPUT_PATH = "OUTPUT/output.pdf";
-    private static final Font TITLE_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-    private static final Font SECTION_TITLE_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
-    private static final Font TEXT_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+    private static final Font TITLE_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD, BaseColor.BLUE);
+    private static final Font SECTION_TITLE_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD, BaseColor.DARK_GRAY);
+    private static final Font TEXT_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.BLACK);
+    private static final BaseColor TABLE_HEADER_COLOR = new BaseColor(200, 200, 200);
 
     @Override
     public void write(List<? extends PatientReport> items) throws Exception {
@@ -53,7 +55,7 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
         table.setSpacingAfter(10f);
 
         // Adding patient information
-        addCellToTable(table, "Patient Information", SECTION_TITLE_FONT, 2);
+        addCellToTable(table, "Patient Information", SECTION_TITLE_FONT, 2, TABLE_HEADER_COLOR);
         addCellToTable(table, "Patient ID: ", TEXT_FONT);
         addCellToTable(table, report.getPatientId(), TEXT_FONT);
         addCellToTable(table, "Patient Name: ", TEXT_FONT);
@@ -64,7 +66,7 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
         addCellToTable(table, report.getGender(), TEXT_FONT);
 
         // Adding report details
-        addCellToTable(table, "Report Details", SECTION_TITLE_FONT, 2);
+        addCellToTable(table, "Report Details", SECTION_TITLE_FONT, 2, TABLE_HEADER_COLOR);
         addCellToTable(table, "Report ID: ", TEXT_FONT);
         addCellToTable(table, report.getReportId(), TEXT_FONT);
         addCellToTable(table, "Date of Report: ", TEXT_FONT);
@@ -97,12 +99,13 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
     }
 
     private void addCellToTable(PdfPTable table, String text, Font font) {
-        addCellToTable(table, text, font, 1);
+        addCellToTable(table, text, font, 1, BaseColor.WHITE);
     }
 
-    private void addCellToTable(PdfPTable table, String text, Font font, int colspan) {
+    private void addCellToTable(PdfPTable table, String text, Font font, int colspan, BaseColor backgroundColor) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setColspan(colspan);
+        cell.setBackgroundColor(backgroundColor);
         cell.setBorder(PdfPCell.NO_BORDER);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(cell);
