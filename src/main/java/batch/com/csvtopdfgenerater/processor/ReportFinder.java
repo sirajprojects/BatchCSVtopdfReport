@@ -20,7 +20,7 @@ public class ReportFinder implements ItemProcessor<PatientReport, PatientReport>
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportFinder.class);
 
     private final JdbcTemplate jdbcTemplate;
-    private final String FILTER_ID = "6525251"; // Replace with the ID you are looking for
+    private final String FILTER_ID = "6525251";
 
     @Autowired
     public ReportFinder(JdbcTemplate jdbcTemplate) {
@@ -32,7 +32,8 @@ public class ReportFinder implements ItemProcessor<PatientReport, PatientReport>
         LOGGER.info("Processing patient report: {}", patientReport);
 
         String sql = "SELECT report_id FROM patient_report WHERE report_id = ?";
-        List<String> results = jdbcTemplate.query(sql, new Object[]{FILTER_ID}, new RowMapper<String>() {
+        @SuppressWarnings("deprecation")
+		List<String> results = jdbcTemplate.query(sql, new Object[]{FILTER_ID}, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getString("report_id");
