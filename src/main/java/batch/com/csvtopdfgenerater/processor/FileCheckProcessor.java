@@ -6,22 +6,24 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import batch.com.csvtopdfgenerater.entity.PatientReport;
+
 @Component
 public class FileCheckProcessor implements ItemProcessor<PatientReport, PatientReport> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileCheckProcessor.class);
-    private static final String FILTER_ID = "0f201a7b-722b-452c-a1c9-51b81b071699";
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileCheckProcessor.class);
+	private static final String FILTER_ID = "302deb4a-d2ee-4a71-8d54-bb50d3c64646";
 
-    @Override
-    public PatientReport process(PatientReport person) throws Exception {
-        LOGGER.info("Processing person: {}", person);
+	@Override
+	public PatientReport process(PatientReport patientReport) throws Exception {
+		LOGGER.info("Processing person: {}", patientReport);
 
-        if (FILTER_ID.equals(person.getPatientId())) {
-            LOGGER.info("PatientReport {} matches filter criteria.", person);
-            return person;
-        } else {
-            LOGGER.info("PatientReport {} does not match filter criteria. Skipping.", person);
-            return null;
-        }
-    }
+		if (FILTER_ID.equals(patientReport.getPatientId())) {
+			LOGGER.info("PatientReport {} matches filter criteria.", patientReport);
+			return patientReport;
+		} else {
+			LOGGER.info("PatientReport {} does not match filter criteria. Skipping.", patientReport);
+			return null;
+		}
+	}
+
 }

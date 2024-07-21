@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import batch.com.csvtopdfgenerater.entity.PatientReport;
 import batch.com.csvtopdfgenerater.processor.FileCheckProcessor;
+import batch.com.csvtopdfgenerater.processor.ReportFinder;
 import batch.com.csvtopdfgenerater.reader.BatchFileReader;
 import batch.com.csvtopdfgenerater.writer.DataWriter;
 import batch.com.csvtopdfgenerater.writer.PdfItemWriter;
@@ -38,7 +39,10 @@ public class BatchConfig {
 	private BatchFileReader reader;
 
 	@Autowired
-	private FileCheckProcessor processor;
+	private FileCheckProcessor csvprocessor;
+	
+	@Autowired
+	private ReportFinder sqlprocessor;
 
 	@Autowired
 	private DataWriter writer;
@@ -60,7 +64,7 @@ public class BatchConfig {
 
 		return stepBuilderFactory.get("csvtomysql").<PatientReport, PatientReport>chunk(10000)
 				.reader(reader.reader())
-				.processor(processor)
+				//.processor(csvprocessor)
 				.writer(writer)
 				.build();
 	}
@@ -68,7 +72,7 @@ public class BatchConfig {
 	@Bean
 	public Step step2() {
 		return stepBuilderFactory.get("generatePdfStep").<PatientReport, PatientReport>chunk(10000).reader(dbReader(dataSource))
-				.writer(pdfItemWriter()).build();
+				.processor(sqlprocessor).writer(pdfItemWriter()).build();
 	}
 
 	@Bean
