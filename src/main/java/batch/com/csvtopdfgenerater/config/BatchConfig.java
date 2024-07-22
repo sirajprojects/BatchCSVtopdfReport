@@ -132,6 +132,8 @@ public class BatchConfig {
         }
     }
 
+    
+    
     @Bean
     public JobExecution runJob() {
         LOGGER.info("Launching job.");
