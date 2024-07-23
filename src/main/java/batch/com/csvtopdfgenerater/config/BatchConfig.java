@@ -97,7 +97,7 @@ public class BatchConfig {
             return stepBuilderFactory.get("generatePdfStep")
                     .<PatientReport, PatientReport>chunk(1000)
                     .reader(dbReader(dataSource))
-                    .processor(sqlprocessor)
+                   // .processor(sqlprocessor)
                     .writer(pdfItemWriter())
                     .throttleLimit(1000) 
                     .build();
