@@ -78,10 +78,11 @@ public class BatchConfig {
         LOGGER.info("Setting up step1.");
         try {
             return stepBuilderFactory.get("csvtomysql")
-                    .<PatientReport, PatientReport>chunk(10000)
+                    .<PatientReport, PatientReport>chunk(1000)
                     .reader(reader.reader())
                     //.processor(csvprocessor)
                     .writer(writer)
+                    .throttleLimit(1000)
                     .build();
         } catch (Exception e) {
             LOGGER.error("Error setting up step1: ", e);
@@ -94,10 +95,11 @@ public class BatchConfig {
         LOGGER.info("Setting up step2.");
         try {
             return stepBuilderFactory.get("generatePdfStep")
-                    .<PatientReport, PatientReport>chunk(10000)
+                    .<PatientReport, PatientReport>chunk(1000)
                     .reader(dbReader(dataSource))
                     .processor(sqlprocessor)
                     .writer(pdfItemWriter())
+                    .throttleLimit(1000) 
                     .build();
         } catch (Exception e) {
             LOGGER.error("Error setting up step2: ", e);
