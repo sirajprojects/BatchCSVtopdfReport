@@ -1,21 +1,18 @@
 package batch.com.csvtopdfgenerater.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "patient_report")
 public class PatientReport {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 	private String patientId;
 	private String patientName;
 	private String dateOfBirth;
 	private String gender;
+    @Id
 	private String reportId;
 	private String dateOfReport;
 	private String specimenType;
@@ -59,8 +56,6 @@ public class PatientReport {
 	public void setReportId(String reportId) {
 		this.reportId = reportId;
 	}
-
-	
 
 	public String getSpecimenType() {
 		return specimenType;

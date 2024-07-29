@@ -34,6 +34,7 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
     public void write(List<? extends PatientReport> items) throws Exception {
         // Group items by patient ID
         Map<String, List<PatientReport>> groupedReports = items.stream()
+                .filter(this::isValidReport) // Filter out invalid reports
                 .collect(Collectors.groupingBy(PatientReport::getPatientId));
 
         // Define timestamp formatter with specified format
@@ -50,25 +51,25 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
             String patientId = entry.getKey();
             List<PatientReport> reports = entry.getValue();
 
-            // Generate ZIP file name and check if it already exists
+            // Generate ZIP file name based on patient ID and timestamp
             String timestamp = LocalDateTime.now().format(formatter); // Get current timestamp
             String zipFileName = "patient_" + patientId + "_" + timestamp + ".zip";
             File zipFile = new File(OUTPUT_PATH + zipFileName);
 
             if (createdZipFiles.contains(zipFileName)) {
-                System.out.println("Skipping ZIP file creation for patient ID " + patientId + " as it already exists.");
                 continue;
             }
 
             // Add the zip file name to the set of created files
             createdZipFiles.add(zipFileName);
 
+            // Create the ZIP file
             try (FileOutputStream fos = new FileOutputStream(zipFile);
                  ZipOutputStream zos = new ZipOutputStream(fos)) {
 
-                // Create a PDF file for each report and add it to the ZIP
+                // Iterate over the reports and add each to the ZIP
                 for (PatientReport report : reports) {
-                    // Use a UUID to ensure unique file names
+                    // Create PDF file name
                     String pdfFileName = "report_" + UUID.randomUUID().toString() + ".pdf";
                     File pdfFile = new File(OUTPUT_PATH + pdfFileName);
 
@@ -91,11 +92,6 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
                         } catch (IOException e) {
                             e.printStackTrace();
                             throw new RuntimeException("Error reading PDF file or adding to ZIP", e);
-                        } finally {
-                            // Optionally delete the PDF file after adding it to the ZIP
-                            if (!pdfFile.delete()) {
-                                System.err.println("Failed to delete temporary PDF file: " + pdfFile.getAbsolutePath());
-                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -107,5 +103,10 @@ public class PdfItemWriter implements ItemWriter<PatientReport> {
                 throw new RuntimeException("Error creating ZIP file", e);
             }
         }
+    }
+
+    private boolean isValidReport(PatientReport report) {
+        // Add your logic to validate if the report contains valid data
+        return report != null && report.getPatientId() != null && !report.getPatientId().isEmpty();
     }
 }

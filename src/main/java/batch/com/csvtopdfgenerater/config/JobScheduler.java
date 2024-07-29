@@ -16,26 +16,25 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class JobScheduler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
 
-    @Autowired
-    private JobLauncher jobLauncher;
+	@Autowired
+	private JobLauncher jobLauncher;
 
-    @Autowired
-    private Job importUserJob;
+	@Autowired
+	private Job importUserJob;
 
-    @Scheduled(cron = "0 * * * * *")  // Every minute
-    public void runScheduledJob() {
-        LOGGER.info("Launching job.");
-        try {
-            JobParameters jobParameters = new JobParametersBuilder()
-                    .addLong("time", System.currentTimeMillis())
-                    .toJobParameters();
-            JobExecution jobExecution = jobLauncher.run(importUserJob, jobParameters);
-            LOGGER.info("Job launched with status: {}", jobExecution.getStatus());
-        } catch (Exception e) {
-            LOGGER.error("Error launching job: ", e);
-            throw new RuntimeException("Failed to launch job", e);
-        }
-    }
+	@Scheduled(cron = "0 * * * * *") // Every minute
+	public void runScheduledJob() {
+		LOGGER.info("Launching job.");
+		try {
+			JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+					.toJobParameters();
+			JobExecution jobExecution = jobLauncher.run(importUserJob, jobParameters);
+			LOGGER.info("Job launched with status: {}", jobExecution.getStatus());
+		} catch (Exception e) {
+			LOGGER.error("Error launching job: ", e);
+			throw new RuntimeException("Failed to launch job", e);
+		}
+	}
 }

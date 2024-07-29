@@ -11,7 +11,7 @@ import batch.com.csvtopdfgenerater.entity.PatientReport;
 public class FileCheckProcessor implements ItemProcessor<PatientReport, PatientReport> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileCheckProcessor.class);
-	private static final String FILTER_ID = "302deb4a-d2ee-4a71-8d54-bb50d3c64646";
+	private static final String FILTER_ID = "123";
 
 	@Override
 	public PatientReport process(PatientReport patientReport) throws Exception {

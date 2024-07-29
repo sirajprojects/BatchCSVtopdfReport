@@ -20,7 +20,7 @@ public class ReportFinder implements ItemProcessor<PatientReport, PatientReport>
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportFinder.class);
 
     private final JdbcTemplate jdbcTemplate;
-    private final String FILTER_ID = "6525252";
+    private final String FILTER_ID = "123";
 
     @Autowired
     public ReportFinder(JdbcTemplate jdbcTemplate) {
